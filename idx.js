@@ -1,14 +1,18 @@
 function AddItem(){
     //for fornt end
-    const val=document.getElementById("para").innerText
     const todo=document.getElementById("txt").value
-    if(todo!=""){
-        var result = val + todo + "\n"
-        document.getElementById("para").innerText=result 
+    
+    if(document.getElementById("txt").value===""){
+        alert("TextBox is empty")
+        return
     }
-    // console.log(result)
+    let temp=document.getElementById("template")
+    let content=temp.content.cloneNode(true)
+    content.querySelector('h2').textContent=txt.value
+    document.body.appendChild(content)
+    
+    
     document.getElementById("txt").value=""
-
     //now for the backend
    fetch('/todo',{method:'POST',
    "headers": {
