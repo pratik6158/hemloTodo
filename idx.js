@@ -2,7 +2,7 @@ function AddItem(){
     //for fornt end
     const todo=document.getElementById("txt").value
     
-    if(document.getElementById("txt").value===""){
+    if(todo===""){
         alert("TextBox is empty")
         return
     }
