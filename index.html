@@ -4,10 +4,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Document</title> 
+    <script src="/idx" defer></script>
 </head>
 <body>
-    Test Site
-    <h1>hello</h1>
+    <div id="main"></div>
+    <h1>To-DO List Application</h1>
+    <input type="text" id="txt" name="txtt"><br><br>
+    <input type="button" id="enterBtn" value="Add" onclick="AddItem()">
+    
+    <p id="para"></p> 
+
+    <template id="template">
+        <div class = "box">
+        <h2>Default</h2>
+        <button>Delete</button>
+        </div>
+    </template>
+
 </body>
 </html>
