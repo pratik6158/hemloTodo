@@ -44,4 +44,24 @@ run.post('/todo',(req,res)=>{
     }
     res.send("Got It")
 })
+
+run.get('/conf',(req,res)=>{
+
+    if(fs.existsSync("./data.json")){
+        fs.readFile(path.resolve(__dirname,"data.json"),"utf-8",(err,dta)=>{
+            if(err){
+                console.log(err)
+            }
+            var data=dta.substring(0,dta.length-1)
+            data+=']'
+            console.log(data)
+            res.send(data)
+        })
+    }else{
+        res.send("[]")
+    }
+
+    
+})
+
 run.listen(5000)
