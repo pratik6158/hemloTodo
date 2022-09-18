@@ -1,0 +1,8 @@
+[
+  { "task": "Do Homework", "completed": false },
+  { "task": "Do cleaning", "completed": false },
+  { "task": "Do Dishes", "completed": false },
+  { "task": "fd", "completed": false },
+  { "task": "fds", "completed": false },
+  { "task": "hemlo", "completed": false }
+]

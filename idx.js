@@ -1,17 +1,22 @@
+var Maindata=[];
 
-function config(){
-    fetch('/conf',{method:"GET"}).then(res=>{
+async function config(){
+    const res= await fetch('/conf',{method:"GET"}).then(res=>{
         return res.json()
     }).then(data=>{
-        console.log(data)
-        data.forEach(i => {
-            console.log(i)
-            let temp=document.getElementById("template")
-            let content=temp.content.cloneNode(true)
-            content.querySelector('h2').textContent=i
-            document.body.appendChild(content)
-        });   
+        // console.log(data)
+        Maindata=data
+        
     })
+    console.log(Maindata)
+    for (let i = 0; i < Maindata.length; i++) {
+        const j = Maindata[i].task;
+        let temp=document.getElementById("template")
+        let content=temp.content.cloneNode(true)
+        content.querySelector('h2').textContent=j
+        document.body.appendChild(content)
+    }
+
     
 }
 
@@ -35,8 +40,8 @@ function AddItem(){
    "headers": {
       "Content-Type": "application/json"
    },body:JSON.stringify({
-    data:todo
-   })}).then(str=>{
-    console.log(str)
-   })
+    task:todo,
+    completed:false
+
+   })})
 }

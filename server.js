@@ -1,8 +1,8 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
-const { json } = require('body-parser')
-
+const { mainModule } = require('process')
+var Maindata=[]
 const folderPath=path.join(__dirname,'Tasks')
 
 const run = express()
@@ -18,34 +18,32 @@ run.get('/idx',(req,res)=>{
 })
 
 run.post('/todo',(req,res)=>{
-    var data=req.body.data
-    if(fs.existsSync(folderPath)){
-        fs.writeFile(folderPath+"/"+data,"",(err)=>{
-            if(err)throw err
-            else console.log("Got The task")
-        })
-    }else{
-        fs.mkdirSync("./Tasks")
-    }
-    res.send("Got It")
+    var file=req.body
+    Maindata.push(file)
+    console.log(Maindata)
+    var path=__dirname+"\\data.json"
+    fs.writeFile(path,JSON.stringify(Maindata),err=>{
+        if(err) throw err
+        else{
+            res.send("Done")
+        }
+    })
 })
 
 run.get('/conf',(req,res)=>{
-    if(!fs.existsSync(folderPath)){
-        fs.mkdirSync("./Tasks")
-        res.send("[]")
-    }
-    else{
-        fs.readdir(folderPath,{encoding:'utf-8'},(err,files)=>{
-            if(err)throw err
-            else{
-                files.forEach(i => {
-                    console.log(i)
-                });
-                res.send(files)
-            }
-        })
-    }
+    var path=__dirname+"\\data.json"
+    fs.readFile(path,(err,data)=>{
+        if(err){
+            res.send("[]")
+            // throw err
+
+        }else{
+            Maindata=data.toString("utf-8")
+            res.send(Maindata)
+            Maindata=JSON.parse(Maindata)
+        }
+    })
+   
 })
 
 run.listen(5000)
