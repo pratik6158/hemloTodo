@@ -1,27 +1,33 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
-const { mainModule } = require('process')
-var Maindata=[]
-const folderPath=path.join(__dirname,'Tasks')
+let Maindata;
+let filePath=__dirname+"\\data.json"
+fs.readFile(filePath,(err,data)=>{
+    if(err){
+        Maindata=[]
+    }else{
+        Maindata=data.toString("utf-8")
+        Maindata=JSON.parse(Maindata)
+    }
+})
 
-const run = express()
-run.use(express.urlencoded());
-run.use(express.json());
+const app = express()
+app.use(express.urlencoded());
+app.use(express.json());
 
-run.get('/',(req,res)=>{
+app.get('/',(req,res)=>{
     res.sendFile(path.resolve(__dirname,"index.html"))
     
 })
-run.get('/idx',(req,res)=>{
+app.get('/idx',(req,res)=>{
     res.sendFile(path.resolve(__dirname,"idx.js"))
 })
 
-run.post('/todo',(req,res)=>{
-    var file=req.body
+app.post('/todo',(req,res)=>{
+    let file=req.body
     Maindata.push(file)
-    console.log(Maindata)
-    var path=__dirname+"\\data.json"
+    let path=__dirname+"\\data.json"
     fs.writeFile(path,JSON.stringify(Maindata),err=>{
         if(err) throw err
         else{
@@ -30,12 +36,11 @@ run.post('/todo',(req,res)=>{
     })
 })
 
-run.get('/conf',(req,res)=>{
-    var path=__dirname+"\\data.json"
+app.get('/conf',(req,res)=>{
+    let path=__dirname+"\\data.json"
     fs.readFile(path,(err,data)=>{
         if(err){
             res.send("[]")
-            // throw err
 
         }else{
             Maindata=data.toString("utf-8")
@@ -46,4 +51,21 @@ run.get('/conf',(req,res)=>{
    
 })
 
-run.listen(5000)
+app.post('/comp',(req,res)=>{
+    let idx=req.body.task
+    console.log(idx)
+    Maindata[idx].completed=true
+    // Maindata.remove(idx)
+    
+
+    let path=__dirname+"\\data.json"
+    fs.writeFile(path,JSON.stringify(Maindata),err=>{
+        if(err) throw err
+        else{
+            res.send("Done")
+        }
+    })
+})
+
+
+app.listen(5000)

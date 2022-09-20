@@ -8,19 +8,13 @@
     <script src="/idx" defer></script>
 </head>
 <body onload="config()">
-    <div id="main"></div>
+    <div id="main">
     <h1>To-DO List Application</h1>
     <input type="text" id="txt" name="txtt"><br><br>
     <input type="button" id="enterBtn" value="Add" onclick="AddItem()">
-    
-    <p id="para"></p> 
-
-    <template id="template">
-        <div class = "box">
-        <h2>Default</h2>
-        <button>Delete</button>
-        </div>
-    </template>
-
+    </div>
+    <br>
+    <input type="button" id="bin" value="BackUp" onclick="Restore()">
+    <div id="restoreSection"></div>
 </body>
 </html>
