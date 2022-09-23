@@ -1,16 +1,13 @@
 const express = require('express')
 const path = require('path')
-const fs = require('fs')
-let Maindata;
+const fs = require('fs');
+let Maindata=[];
 let filePath=__dirname+"\\data.json"
-fs.readFile(filePath,(err,data)=>{
-    if(err){
-        Maindata=[]
-    }else{
-        Maindata=data.toString("utf-8")
-        Maindata=JSON.parse(Maindata)
-    }
-})
+const folderName="tasks"
+const folderPath=path.resolve(__dirname,folderName)
+if(!fs.existsSync(folderPath)){
+    fs.mkdirSync(folderName)
+}
 
 const app = express()
 app.use(express.urlencoded());
@@ -24,48 +21,47 @@ app.get('/idx',(req,res)=>{
     res.sendFile(path.resolve(__dirname,"idx.js"))
 })
 
+//add the todo
 app.post('/todo',(req,res)=>{
     let file=req.body
-    Maindata.push(file)
-    let path=__dirname+"\\data.json"
-    fs.writeFile(path,JSON.stringify(Maindata),err=>{
+    // console.log(file)
+    fs.writeFile("./tasks/"+file.task,JSON.stringify(file),(err)=>{
         if(err) throw err
         else{
-            res.send("Done")
+            Maindata.push(file)
+            console.log(Maindata)
+            res.send("Noted The task -> "+file.task)
+      
         }
     })
 })
 
 app.get('/conf',(req,res)=>{
-    let path=__dirname+"\\data.json"
-    fs.readFile(path,(err,data)=>{
-        if(err){
-            res.send("[]")
-
-        }else{
-            Maindata=data.toString("utf-8")
-            res.send(Maindata)
-            Maindata=JSON.parse(Maindata)
-        }
-    })
-   
-})
-
-app.post('/comp',(req,res)=>{
-    let idx=req.body.task
-    console.log(idx)
-    Maindata[idx].completed=true
-    // Maindata.remove(idx)
-    
-
-    let path=__dirname+"\\data.json"
-    fs.writeFile(path,JSON.stringify(Maindata),err=>{
+    let taskList=fs.readdirSync(folderPath,{encoding:"utf-8"},(err)=>{
         if(err) throw err
-        else{
-            res.send("Done")
-        }
     })
+    const temp = taskList.map((val)=>JSON.parse(fs.readFileSync("tasks/"+val,{encoding:"utf-8"})))
+    Maindata=temp
+    res.send(Maindata)
 })
 
+//to delete the task
+app.post('/del',(req,res)=>{
+    let idx=req.body.id;
+    console.log(idx)
+    for (let i = 0; (i < Maindata.length); i++) {
+        if(Maindata[i].id==idx){
+            fs.unlink(path.resolve(folderPath,Maindata[i].task),err=>{
+                if(err){
+                    throw err
+                } 
+                else{
+                    Maindata.splice(i,1)
+                    res.send("Removed the file Sucessfully") 
+                }
+            })
+        }
+    }
+})
 
 app.listen(5000)

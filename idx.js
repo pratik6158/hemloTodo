@@ -1,15 +1,16 @@
+const data= new Date()
 var Maindata = [];
 var i = 0;
 
-function createTask(task,btnTxt,btnClass) {
+function createTask(task,btnTxt,btnClass,taskId) {
   let container = document.createElement("div");
   container.setAttribute("id", i);
   let deleteButton = document.createElement("button");
-  deleteButton.setAttribute("id", "deleteBtn" + i);
+  deleteButton.setAttribute("id", taskId);
   deleteButton.setAttribute("class", btnClass);
   deleteButton.innerText = btnTxt;
   let para = document.createElement("p");
-  para.setAttribute("id", "p" + i);
+  para.setAttribute("id", taskId);
   para.innerHTML = task;
   container.appendChild(para);
   container.appendChild(deleteButton);
@@ -28,23 +29,26 @@ async function config() {
   console.log(Maindata)
   for (i = 0; i < Maindata.length; i++) {
     if(Maindata[i].completed===false){
-        createTask(Maindata[i].task,"Delete","del");
+        createTask(Maindata[i].task,"Delete","del",Maindata[i].id);
     }
   }
-  del();
+  del()
 }
 
 function AddItem() {
   //for fornt end
+  let genId = Date.now()
   const todo = document.getElementById("txt").value;
   if (todo === "") {
     alert("TextBox is empty");
     return;
   } else {
-    createTask(todo,"Delete","del");
-    i++;
+    createTask(todo,"Delete","del",genId);
+    i++;  
     document.getElementById("txt").value = "";
   }
+  
+  console.log(genId)
   //now for the backend
   fetch("/todo", {
     method: "POST",
@@ -52,46 +56,33 @@ function AddItem() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      id: genId,
       task: todo,
       completed: false,
     }),
   });
-  del();
+  del()
 }
 
-async function del() {
+function del() {
   let deleteButtons = document.querySelectorAll(".del");
-  console.log(deleteButtons);
+  // console.log(deleteButtons);
   deleteButtons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      console.log(btn.id);
       let temp = btn.parentElement;
-      let id = temp.id;
-      console.log(id);
+      let idx = btn.id;
+      console.log(idx);
       temp.remove();
 
-      fetch("/comp", {
+      fetch("/del", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          task: id,
+          id: idx,
         }),
       });
     });
   });
-}
-
-function Restore(){
-    if(document.getElementById("restoreSection").style.display == "none"){
-        document.getElementById("restoreSection").style.display = "block"    
-        for (i = 0; i < Maindata.length; i++) {
-            if(Maindata[i].completed===true){
-                createTask(Maindata[i].task,"Restore","res");
-            }
-        }
-    }else{
-        document.getElementById("restoreSection").style.display = "none"
-    }
 }
