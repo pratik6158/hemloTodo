@@ -2,7 +2,7 @@
 const tasksDOM=document.querySelector(".tasks");
 const loadingDOM=document.querySelector(".loading-text")
 const taskInputDOM=document.querySelector(".task-input")
-
+const formDOM=document.querySelector(".task-form")
 
 //Load task from api/tasks/
 const showTasks=()=>{
@@ -52,4 +52,20 @@ tasksDOM.addEventListener("click",async(e)=>{
     console.log(err)
   }
   loadingDOM.style.visibility="hidden"
+})
+
+//add an element
+formDOM.addEventListener("submit",async(e)=>{
+  const taskName=taskInputDOM.value
+  try{
+    await fetch('/api/tasks/',{method:"POST",headers:{
+      "Content-type":"application/json"
+    },body:JSON.stringify({
+      "name":taskName,
+      "completed":false
+    })})
+    showTasks()
+  }catch(err){
+    console.log(err)
+  }
 })
