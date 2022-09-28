@@ -22,11 +22,20 @@ const showTasks=()=>{
       }
       const allTasks=tasks.map((task)=>{
         const {completed,_id:taskID,name}=task;
-        return `<div class="single-task">
-        <h5>${name}</h5>
-        <button type="button" class="delete-btn" id="${taskID}">Delete
-        </button>
-        </div>`
+        if(completed){
+          return `<div class="single-task">
+          <h5><s>${name}</s></h5>
+          <button type="button" class="delete-btn" id="${taskID}">Delete</button>
+          <a href="task.html?id=${taskID}">Edit</a>
+          </div>`
+        }else{
+          return `<div class="single-task">
+          <h5>${name}</h5>
+          <button type="button" class="delete-btn" id="${taskID}">Delete</button>
+          <a href="task.html?id=${taskID}">Edit</a>
+          </div>`
+        }
+        
       }).join("")
       tasksDOM.innerHTML=allTasks
     })
@@ -42,7 +51,9 @@ showTasks()
 
 //delete task api/tasks/:id
 tasksDOM.addEventListener("click",async(e)=>{
+  console.log(e)
   const el=e.target
+
   const taskID=el.id
   try{
     loadingDOM.style.visibility="visible"
