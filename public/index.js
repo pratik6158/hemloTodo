@@ -37,5 +37,19 @@ const showTasks=()=>{
   loadingDOM.style.visibility="hidden";
   
 }
-
 showTasks()
+
+
+//delete task api/tasks/:id
+tasksDOM.addEventListener("click",async(e)=>{
+  const el=e.target
+  const taskID=el.id
+  try{
+    loadingDOM.style.visibility="visible"
+    await fetch(`/api/tasks/${taskID}/`,{method:"Delete"})
+    showTasks()
+  }catch(err){
+    console.log(err)
+  }
+  loadingDOM.style.visibility="hidden"
+})
