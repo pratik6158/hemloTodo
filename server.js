@@ -1,51 +1,29 @@
+const PORT=5000
 const express = require('express')
-const path = require('path')
-const fs = require('fs')
-const { json } = require('body-parser')
+const app = express()
+const tasks=require('./routes/task')
+const connectDB=require('./db/connect')
 
-const folderPath=path.join(__dirname,'Tasks')
+app.use(express.static('./public'))
+app.use(express.json())
 
-const run = express()
-run.use(express.urlencoded());
-run.use(express.json());
+app.use('/api/tasks',tasks)
 
-run.get('/',(req,res)=>{
-    res.sendFile(path.resolve(__dirname,"index.html"))
-    
-})
-run.get('/idx',(req,res)=>{
-    res.sendFile(path.resolve(__dirname,"idx.js"))
-})
 
-run.post('/todo',(req,res)=>{
-    var data=req.body.data
-    if(fs.existsSync(folderPath)){
-        fs.writeFile(folderPath+"/"+data,"",(err)=>{
-            if(err)throw err
-            else console.log("Got The task")
+const start=async()=>{
+    try{
+        await connectDB()
+        app.listen(PORT,()=>{
+            console.log(`Server is at ${PORT}`)
         })
-    }else{
-        fs.mkdirSync("./Tasks")
+    }catch(err){
+        console.log(err)
     }
-    res.send("Got It")
-})
+}
 
-run.get('/conf',(req,res)=>{
-    if(!fs.existsSync(folderPath)){
-        fs.mkdirSync("./Tasks")
-        res.send("[]")
-    }
-    else{
-        fs.readdir(folderPath,{encoding:'utf-8'},(err,files)=>{
-            if(err)throw err
-            else{
-                files.forEach(i => {
-                    console.log(i)
-                });
-                res.send(files)
-            }
-        })
-    }
-})
-
-run.listen(5000)
+start()
+//endpoints
+//Get All tasks /api/tasks/
+//Create a new Task /api/tasks/
+//Delete a task /api/tasks/:id
+//Modify a task /api/tasks/:id
