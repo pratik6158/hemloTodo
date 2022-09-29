@@ -1,8 +1,8 @@
 const PORT=5000
 const express = require('express')
 const app = express()
-const tasks=require('./routes/task')
-const connectDB=require('./db/connect')
+const tasks=require('./src/routes/task')
+const connectDB=require('./src/db/connect')
 
 app.use(express.static('./public'))
 app.use(express.json())
