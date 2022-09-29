@@ -3,12 +3,19 @@ const express = require('express')
 const app = express()
 const tasks=require('./src/routes/task')
 const connectDB=require('./src/db/connect')
+const path=require('path')
+
 
 app.use(express.static('./public'))
 app.use(express.json())
 
 app.use('/api/tasks',tasks)
-
+app.get('/',(req,res)=>{
+    res.status(200).sendFile(path.resolve(__dirname,"./public/index.html"))
+})
+app.get('*',(req,res)=>{
+    res.status(404).send("Invalid Path")
+})
 
 const start=async()=>{
     try{
