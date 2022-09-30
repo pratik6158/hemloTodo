@@ -4,6 +4,7 @@ const app = express()
 const tasks=require('./src/routes/task')
 const connectDB=require('./src/db/connect')
 const path=require('path')
+require('dotenv').config()
 
 
 app.use(express.static('./public'))
@@ -20,7 +21,7 @@ app.get('*',(req,res)=>{
 const start=async()=>{
     try{
         await connectDB()
-        app.listen(PORT,()=>{
+        app.listen(process.env.PORT||PORT,()=>{
             console.log(`Server is at ${PORT}`)
         })
     }catch(err){
